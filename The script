@@ -1,0 +1,154 @@
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+
+-- Button Declarations
+local SpeedButton = Instance.new("TextButton")
+local SpeedBox = Instance.new("TextBox")
+local ESPButton = Instance.new("TextButton")
+local MaxStatsButton = Instance.new("TextButton")
+local DandySkinButton = Instance.new("TextButton")
+local RainbowToonsButton = Instance.new("TextButton")
+local RedeemCodesButton = Instance.new("TextButton")
+local ExtractMovementButton = Instance.new("TextButton")
+local DisableTwistedEffectsButton = Instance.new("TextButton")
+local GodModeButton = Instance.new("TextButton")
+local NoVeePopupsButton = Instance.new("TextButton")
+local ModifiedWorldButton = Instance.new("TextButton")
+
+-- GUI Setup
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+Frame.Parent = ScreenGui
+Frame.Size = UDim2.new(0, 200, 0, 650)
+Frame.Position = UDim2.new(0.5, -100, 0.5, -325)
+
+-- Speed Button
+SpeedButton.Parent = Frame
+SpeedButton.Size = UDim2.new(0, 180, 0, 40)
+SpeedButton.Position = UDim2.new(0, 10, 0, 10)
+SpeedButton.Text = "Change Speed"
+
+SpeedBox.Parent = Frame
+SpeedBox.Size = UDim2.new(0, 180, 0, 40)
+SpeedBox.Position = UDim2.new(0, 10, 0, 50)
+SpeedBox.PlaceholderText = "Enter speed (1-999)"
+SpeedBox.Visible = false
+
+SpeedBox:GetPropertyChangedSignal("Text"):Connect(function()
+    local num = tonumber(SpeedBox.Text)
+    if num and num >= 1 and num <= 999 then
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = num
+    else
+        SpeedBox.Text = ""
+    end
+end)
+
+SpeedButton.MouseButton1Click:Connect(function()
+    SpeedBox.Visible = not SpeedBox.Visible
+end)
+
+-- ESP Button
+ESPButton.Parent = Frame
+ESPButton.Size = UDim2.new(0, 180, 0, 40)
+ESPButton.Position = UDim2.new(0, 10, 0, 100)
+ESPButton.Text = "Toggle ESP"
+
+ESPButton.MouseButton1Click:Connect(function()
+    for _, obj in pairs(workspace:GetChildren()) do
+        if obj:IsA("Model") and obj:FindFirstChild("Humanoid") then
+            local highlight = Instance.new("Highlight", obj)
+            highlight.FillColor = Color3.fromRGB(255, 50, 50)
+            highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+            local tag = Instance.new("BillboardGui", obj)
+            local label = Instance.new("TextLabel", tag)
+            label.Size = UDim2.new(1, 0, 1, 0)
+            label.Text = obj.Name
+            label.TextColor3 = Color3.new(1, 1, 1)
+            label.BackgroundTransparency = 1
+        end
+    end
+end)
+
+-- Max Stats Button
+MaxStatsButton.Parent = Frame
+MaxStatsButton.Size = UDim2.new(0, 180, 0, 40)
+MaxStatsButton.Position = UDim2.new(0, 10, 0, 150)
+MaxStatsButton.Text = "Max Stats"
+
+MaxStatsButton.MouseButton1Click:Connect(function()
+    local toon = game.Players.LocalPlayer.Character:FindFirstChild("CurrentToon")
+    if toon then
+        for _, stat in pairs(toon:GetChildren()) do
+            if stat:IsA("IntValue") then
+                stat.Value = 5
+            end
+        end
+    end
+end)
+
+-- Dandy Skin Button
+DandySkinButton.Parent = Frame
+DandySkinButton.Size = UDim2.new(0, 180, 0, 40)
+DandySkinButton.Position = UDim2.new(0, 10, 0, 200)
+DandySkinButton.Text = "Dandy Skin"
+
+DandySkinButton.MouseButton1Click:Connect(function()
+    local dandyModel = game.ReplicatedStorage:FindFirstChild("DandyModel")
+    if dandyModel then
+        local newCharacter = dandyModel:Clone()
+        newCharacter.Parent = workspace
+        newCharacter:SetPrimaryPartCFrame(game.Players.LocalPlayer.Character:GetPrimaryPartCFrame())
+        game.Players.LocalPlayer.Character = newCharacter
+    end
+end)
+
+-- Rainbow Toons Button
+RainbowToonsButton.Parent = Frame
+RainbowToonsButton.Size = UDim2.new(0, 180, 0, 40)
+RainbowToonsButton.Position = UDim2.new(0, 10, 0, 250)
+RainbowToonsButton.Text = "Rainbow Toons"
+
+RainbowToonsButton.MouseButton1Click:Connect(function()
+    local toon = game.Players.LocalPlayer.Character:FindFirstChild("CurrentToon")
+    if toon then
+        local colors = {Color3.fromRGB(255,0,0), Color3.fromRGB(255,165,0), Color3.fromRGB(255,255,0), Color3.fromRGB(0,255,0), Color3.fromRGB(0,0,255), Color3.fromRGB(75,0,130), Color3.fromRGB(238,130,238)}
+        while toon and toon.Parent do
+            for _, part in pairs(toon:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.Color = colors[math.random(1, #colors)]
+                end
+            end
+            wait(0.5)
+        end
+    end
+end)
+
+-- God Mode Button
+GodModeButton.Parent = Frame
+GodModeButton.Size = UDim2.new(0, 180, 0, 40)
+GodModeButton.Position = UDim2.new(0, 10, 0, 450)
+GodModeButton.Text = "God Mode"
+
+GodModeButton.MouseButton1Click:Connect(function()
+    local humanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+    if humanoid then
+        humanoid.Health = math.huge
+    end
+end)
+
+-- Modified Dandy’s World Button
+ModifiedWorldButton.Parent = Frame
+ModifiedWorldButton.Size = UDim2.new(0, 180, 0, 40)
+ModifiedWorldButton.Position = UDim2.new(0, 10, 0, 600)
+ModifiedWorldButton.Text = "Modified Dandy’s World"
+
+ModifiedWorldButton.MouseButton1Click:Connect(function()
+    local items = {"GunModel", "PlushieModel", "ArtifactModel"}
+    if math.random() > 0.5 then
+        local selectedItem = game.ReplicatedStorage:FindFirstChild(items[math.random(1, #items)])
+        if selectedItem then
+            local newItem = selectedItem:Clone()
+            newItem.Parent = workspace
+            newItem.Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(math.random(-5,5), 0, math.random(-5,5))
+        end
+    end
+end)
